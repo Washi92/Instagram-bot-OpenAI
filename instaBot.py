@@ -3,8 +3,6 @@ import os
 import urllib.request
 from imageProcessing import overlay_text
 
-
-
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -13,7 +11,7 @@ API_KEY = os.environ.get('API_KEY')
 # Set up your OpenAI API credentials
 openai.api_key = API_KEY
 
-def generate_tip():
+async def generate_tip():
     # Prompt for generating tips and tricks
     prompt = "Generate a tip or trick for entrepreneurs:"
 
@@ -30,7 +28,12 @@ def generate_tip():
     tip = response.choices[0].text.strip()
     return tip
 
-def generate_quote():
+# Generate a tip
+#tip = generate_tip()
+#print("Tip:", tip)
+
+
+async def generate_quote():
     # Prompt for generating motivational quotes
     prompt = "Generate a motivational quote for entrepreneurs:"
 
@@ -47,25 +50,6 @@ def generate_quote():
     quote = response.choices[0].text.strip()
     return quote
 
-# Generate a tip
-tip = generate_tip()
-print("Tip:", tip)
-
-# Generate a quote
-quote = generate_quote()
-print("Quote:", quote)
-
-
-response = openai.Image.create(
-  prompt="motivational landascape without text",
-  n=1,
-  size="1024x1024"
-)
-
-image_url = response['data'][0]['url']
-
-# SAVE THE IMAGE
-
 def save_image_from_url(url, file_path):
     try:
         urllib.request.urlretrieve(url, file_path)
@@ -73,9 +57,28 @@ def save_image_from_url(url, file_path):
     except Exception as e:
         print(f"Error saving the image: {str(e)}")
 
-# Example usage
-save_image_from_url(image_url, "MotivationalImg.jpg")
+async def motivate_me():
+    # Generate a quote
+    quote = generate_quote()
+    print("Quote:", quote)
+
+    # OpenAI request
+    response = openai.Image.create(
+    prompt="motivational landascape without text",
+    n=1,
+    size="1024x1024"
+    )
+
+    image_url = response['data'][0]['url']
+
+    # SAVE THE IMAGE
+    save_image_from_url(image_url, "MotivationalImg.jpg")
+    # OVERLAY THE TEXT
+    path = overlay_text("MotivationalImg.jpg", quote, ".\images\\")
+    path = path.replace("\\","/")
+    print(path)
+    return path
+    
 
 
 
-overlay_text("MotivationalImg.jpg", quote, ".\images\\")

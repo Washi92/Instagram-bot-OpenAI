@@ -1,9 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont
 import datetime
 
-
-
-
 # OVERLAY THE TEXT ON THE IMAGE
 def overlay_text(image_path, text, output_path):
     try:
@@ -99,6 +96,7 @@ def overlay_text(image_path, text, output_path):
         image.save(output_filename)
         
         print("Image with overlay text saved successfully!")
+        return output_filename
     except Exception as e:
         print(f"Error overlaying text onto the image: {str(e)}")
 
